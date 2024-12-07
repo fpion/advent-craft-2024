@@ -10,6 +10,13 @@ enum Sex {
     CATACT = 3,
 }
 
+type EIDValidator = (EID: string) => boolean;
+
+const EIDValidators: EIDValidator[] = [
+    validateEIDLength,
+    validateElfSex,
+    validateElfYear,
+];
 function validateEIDLength(EID: string) {
     return EID.length === 8;
 }
@@ -24,7 +31,7 @@ function validateElfYear(EID: string) {
 
 //TODO :4, 5, 6	"Serial number": birth order	From 001 to 999
 const validateEID = (EID: string) => {
-    return validateEIDLength(EID) && validateElfSex(EID) && validateElfYear(EID);
+    return EIDValidators.every(validator => validator(EID));
 }
 
 //TODO  :7, 8	control key = complement to 97 of the number formed by the first 6 digits of the EID modulo 97	From 01 to 97
