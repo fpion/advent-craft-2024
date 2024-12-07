@@ -17,25 +17,30 @@ class EID {
     
     private readonly VALID_LENGTH = 8;
 
-    validateEIDLength(EID: EID) {
+    validateEIDLength() {
         return this.EID.length === this.VALID_LENGTH;
     }
 
-    validateElfSex(EID: EID) {
+    validateElfSex() {
         return Number(this.EID.slice(0, 1)) in Sex;
     }
 
-    validateElfYear(EID: EID) {
+    validateElfYear() {
         return Number(this.EID.slice(1, 3)) > 0 && Number(this.EID.slice(1, 3)) < 100;
+    }
+
+    validateOrderSerialNumber() {
+        return Number(this.EID.slice(3, 5)) > 0 && Number(this.EID.slice(3, 5)) < 1000;
     }
 }
 
 type EIDValidator = (eid: EID) => boolean;
 
 const EIDValidators: EIDValidator[] = [
-    eid => eid.validateEIDLength(eid),
-    eid => eid.validateElfSex(eid),
-    eid => eid.validateElfYear(eid),
+    eid => eid.validateEIDLength(),
+    eid => eid.validateElfSex(),
+    eid => eid.validateElfYear(),
+    eid => eid.validateOrderSerialNumber(),
 ];
 
 
