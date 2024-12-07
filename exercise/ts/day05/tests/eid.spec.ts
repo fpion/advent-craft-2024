@@ -5,7 +5,10 @@
 //TODO :4, 5, 6	"Serial number": birth order	From 001 to 999
 //TODO  :7, 8	control key = complement to 97 of the number formed by the first 6 digits of the EID modulo 97	From 01 to 97
 describe('EID', () => {
-    test('implement your tests here', () => {
-        expect(43).toBe(42);
+    test('An EID have a length of 8 Digits', () => {
+        expect(validateEID('12345678')).toBe(true);
+        expect(validateEID('12345')).toBe(false);
+        
     });
+        
 });
