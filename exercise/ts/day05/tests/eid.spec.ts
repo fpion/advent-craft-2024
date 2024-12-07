@@ -1,6 +1,5 @@
 
 
-// TODO : 2, 3	Last two digits of the year of birth (which gives the year to the nearest century)	From 00 to 99
 // TODO : 4, 5, 6	"Serial number": birth order	From 001 to 999
 // TODO : 7, 8	control key = complement to 97 of the number formed by the first 6 digits of the EID modulo 97	From 01 to 97
 
@@ -10,47 +9,66 @@ enum Sex {
     CATACT = 3,
 }
 
-type EIDValidator = (EID: string) => boolean;
+class EID {
+    constructor(EID: string) {
+        this.EID = EID;
+    }
+    EID: string;
+    
+    private readonly VALID_LENGTH = 8;
+
+    validateEIDLength(EID: EID) {
+        return this.EID.length === this.VALID_LENGTH;
+    }
+
+    validateElfSex(EID: EID) {
+        return Number(this.EID.slice(0, 1)) in Sex;
+    }
+
+    validateElfYear(EID: EID) {
+        return Number(this.EID.slice(1, 3)) > 0 && Number(this.EID.slice(1, 3)) < 100;
+    }
+}
+
+type EIDValidator = (eid: EID) => boolean;
 
 const EIDValidators: EIDValidator[] = [
-    validateEIDLength,
-    validateElfSex,
-    validateElfYear,
+    eid => eid.validateEIDLength(eid),
+    eid => eid.validateElfSex(eid),
+    eid => eid.validateElfYear(eid),
 ];
-function validateEIDLength(EID: string) {
-    return EID.length === 8;
-}
 
-function validateElfSex(EID: string) {
-    return Number(EID.slice(0, 1)) in Sex;
-}
-
-function validateElfYear(EID: string) {
-    return Number(EID.slice(1, 3)) > 0 && Number(EID.slice(1, 3)) < 100;
-}
 
 //TODO :4, 5, 6	"Serial number": birth order	From 001 to 999
-const validateEID = (EID: string) => {
-    return EIDValidators.every(validator => validator(EID));
+const validateEIDNew = (eid: EID) => {
+    return EIDValidators.every(validator => validator(eid));
 }
+
 
 //TODO  :7, 8	control key = complement to 97 of the number formed by the first 6 digits of the EID modulo 97	From 01 to 97
 describe('EID', () => {
     test('An EID have a length of 8 Digits', () => {
-        expect(validateEID('12345678')).toBe(true);
-        expect(validateEID('12345')).toBe(false);
-        expect(validateEID('')).toBe(false);
+        expect(validateEIDNew(new EID('12345678'))).toBe(true);
+        expect(validateEIDNew(new EID('12345'))).toBe(false);
+        expect(validateEIDNew(new EID(''))).toBe(false);
     });
-    test('Fist Digit of an EID is 1,2,3 for Sex of Elf', () => {
-        expect(validateEID('12345678')).toBe(true);
-        expect(validateEID('22345678')).toBe(true);
-        expect(validateEID('32345678')).toBe(true);
-        expect(validateEID('42345678')).toBe(false);
+    test('First Digit of an EID is 1,2,3 for Sex of Elf', () => {
+        expect(validateEIDNew(new EID('12345678'))).toBe(true);
+        expect(validateEIDNew(new EID('22345678'))).toBe(true);
+        expect(validateEIDNew(new EID('32345678'))).toBe(true);
+        expect(validateEIDNew(new EID('42345678'))).toBe(false);
     });
 
-    test('Fist Digit of an EID is 1,2,3 for Sex of Elf', () => {
-        expect(validateEID('12445678')).toBe(true);
-        expect(validateEID('22x45678')).toBe(false);
-        expect(validateEID('3b345678')).toBe(false);
+    test('Digit 2,3 id for Year of Elf between 00 and 99', () => {
+        expect(validateEIDNew(new EID('12445678'))).toBe(true);
+        expect(validateEIDNew(new EID('22x45678'))).toBe(false);
+        expect(validateEIDNew(new EID('3b345678'))).toBe(false);
+    });
+    
+    test('Digit 4,5,6 are serial number', () => {
+        expect(validateEIDNew(new EID('12345678'))).toBe(true);
+        expect(validateEIDNew(new EID('1234a67a'))).toBe(false);
+        expect(validateEIDNew(new EID('123a4678'))).toBe(false);
+        expect(validateEIDNew(new EID('12345678'))).toBe(true);
     });
 });
