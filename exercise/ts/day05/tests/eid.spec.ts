@@ -76,4 +76,10 @@ describe('EID', () => {
         expect(validateEIDNew(new EID('123a4678'))).toBe(false);
         expect(validateEIDNew(new EID('12345678'))).toBe(true);
     });
+    test('Last two digit is key with modul 97', () => {
+        expect(validateEIDNew(new EID('12345672'))).toBe(true);
+        expect(validateEIDNew(new EID('18946423'))).toBe(true);
+        expect(validateEIDNew(new EID('18946413'))).toBe(false);
+        expect(validateEIDNew(new EID('12345678'))).toBe(false);
+    });
 });
